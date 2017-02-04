@@ -1,0 +1,7 @@
+{
+	"provider": "libvirt1",
+	"command": ":",
+	"experimentDuration": 60,
+	"samplingInterval": 5,
+	"instances": ["ubuntu02"]
+}

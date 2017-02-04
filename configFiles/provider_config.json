@@ -1,0 +1,37 @@
+{
+	"libvirt1": {
+		"type": "libvirt",
+		"parameters" : {
+			"url": "qemu:///system"
+		},
+		"instances" : {
+			"ubuntu01" : {
+				"domain_name": "ubuntu01",
+				"user_name": "teste",
+				"password": "12345"
+			},
+			"ubuntu02" : {
+				"domain_name": "ubuntu02",
+				"user_name": "teste",
+				"password": "12345"
+			}
+		}
+	},
+	
+	"openstack1" : {
+		"type": "openstack",
+		"parameters" : {
+			"user" : "facebook1513796191969414",
+			"password" : "ziihRImSXeYReeSR",
+			"url" : "http://x86.trystack.org:5000/v2.0/tokens/",
+			"region" : "RegionOne",
+			"tenant_name" : "facebook1513796191969414"
+		},
+		"instances" : {
+			"inst1" : {
+				"image": "Ubuntu16.04",
+				"size": "m1.small"
+			}
+		}		
+	}
+}
