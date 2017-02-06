@@ -11,4 +11,4 @@ experimentConfig = sys.argv[2]
 fac = ServiceFactory(providerConfig)
 exp = Experiment(experimentConfig, fac)
 
-exp.prepareVirtualMachines()
+exp.startExperiment()

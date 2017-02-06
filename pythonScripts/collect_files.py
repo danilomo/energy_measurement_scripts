@@ -25,6 +25,3 @@ for i in instances:
 	node.getFile( "./logFiles/log_io.txt", "./logFiles/log_" + i + "_io.txt");
 	node.getFile("./logFiles/log_net.txt", "./logFiles/log_" + i + "_net.txt");
 	node.closeSSHSession()
-	
-	
-

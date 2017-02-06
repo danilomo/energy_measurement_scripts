@@ -47,7 +47,7 @@ do
    eth0uppacket2=`echo $eth02 | awk '{print $11}'`
    eth0uppacket=`expr '(' $eth0uppacket2 - $eth0uppacket1 ')'`
 	
-	echo $timestamp $eth0download $eth0upload $eth0downpacket $eth0uppacket >> "./logFiles/log_net.txt"
+	echo $timestamp $eth0download $eth0upload $eth0downpacket $eth0uppacket >> "./logFiles/log_net_$netinterface.txt"
 
 	dt=$(date -d "$dt +$3 seconds")
 

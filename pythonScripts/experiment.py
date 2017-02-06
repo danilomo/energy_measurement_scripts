@@ -14,7 +14,7 @@ class Experiment:
 		self._provider.connect()
 		self._expConfig = "experiment_config.json"
 		
-	def startExperiment(self):			
+	def prepareVirtualMachines(self):			
 		
 		instances = self._config["instances"]
 		
@@ -33,19 +33,33 @@ class Experiment:
 
 			node.waitServiceActive(22)
 			
-		self.generateConfig()
-		
-		#return
+		self.generateConfig()		
 		
 		for inst in instances:
 			node = self._provider.lookup_instance(inst)
 			
 			node.openSSHSession()
 			
-			node.sendFile(self._expConfig, "./.incron_files/config.json")
+			#node.sendFile(self._expConfig, "./.incron_files/config.json")
 			#node.sendFile(self._expConfig, "./config.json")
 			
 			node.closeSSHSession()
+			
+			
+	def startExperiment(self):
+		instances = self._config["instances"]
+		
+		for inst in instances:
+			node = self._provider.lookup_instance(inst)
+			
+			node.openSSHSession()
+			
+			command = self._config["command"]
+			command = "nohup " + command + " > /dev/null 2>&1 &"
+			
+			print node.sendSSHCommand( command )
+			
+			node.closeSSHSession()			
 
 		
 	def generateConfig(self):	
@@ -64,10 +78,10 @@ class Experiment:
 
 
 
-providerConfig = sys.argv[1]
-experimentConfig = sys.argv[2]
+#providerConfig = sys.argv[1]
+#experimentConfig = sys.argv[2]
 
-fac = ServiceFactory(providerConfig)
-exp = Experiment(experimentConfig, fac)
+#fac = ServiceFactory(providerConfig)
+#exp = Experiment(experimentConfig, fac)
 
-exp.startExperiment()
+#exp.startExperiment()
