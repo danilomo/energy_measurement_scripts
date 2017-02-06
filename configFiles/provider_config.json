@@ -21,11 +21,11 @@
 	"openstack1" : {
 		"type": "openstack",
 		"parameters" : {
-			"user" : "facebook1513796191969414",
-			"password" : "ziihRImSXeYReeSR",
+			"user" : "",
+			"password" : "",
 			"url" : "http://x86.trystack.org:5000/v2.0/tokens/",
 			"region" : "RegionOne",
-			"tenant_name" : "facebook1513796191969414"
+			"tenant_name" : ""
 		},
 		"instances" : {
 			"inst1" : {
