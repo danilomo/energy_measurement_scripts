@@ -1,0 +1,35 @@
+* monitor_cpu_process.sh
+
+lo@danilo-desktop:~/Desktop/workspace$ pidstat -p 3756 1 1 
+Linux 4.4.0-62-generic (danilo-desktop)     02/07/2017  _x86_64_    (4 CPU)
+
+09:13:39 AM   UID       PID    %usr %system  %guest    %CPU   CPU  Command
+09:13:40 AM  1000      3756  100.00    0.00    0.00  100.00     1  stress-ng-cpu
+Average:     1000      3756  100.00    0.00    0.00  100.00     -  stress-ng-cpu
+
+danilo@danilo-desktop:~/Desktop/workspace$ pidstat -p 3756 1 1 | awk 'NR == 4 { print $5, $6, $7, $8, $9}'
+100.00 0.00 0.00 100.00 3
+
+
+* monitor_cpu.sh
+
+danilo@danilo-desktop:~/Desktop/workspace$ mpstat -P ALL 1 1
+Linux 4.4.0-62-generic (danilo-desktop)     02/07/2017  _x86_64_    (4 CPU)
+
+09:14:54 AM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+09:14:55 AM  all   25.31    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   74.69
+09:14:55 AM    0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+09:14:55 AM    1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+09:14:55 AM    2    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+09:14:55 AM    3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+
+Average:     CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+Average:     all   25.31    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00   74.69
+Average:       0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       2    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
+Average:       3  100.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00
+
+danilo@danilo-desktop:~/Desktop/workspace$ mpstat -P ALL 1 1 | awk 'NR == 4 {all_usr = $4;all_nice = $5;all_sys = $6;}NR == 5 {c1_usr = $4;c1_nice = $5;c1_sys = $6;}NR == 6 {c2_usr = $4;c2_nice = $5;c2_sys = $6;}NR == 7 {c3_usr = $4;c3_nice = $5;c3_sys = $6;}NR == 8 {c4_usr = $4;c4_nice = $5;c4_sys = $6;}END {print all_usr, all_nice, all_sys, c1_usr, c1_nice, c1_sys,  c2_usr, c2_nice, c2_sys,  c3_usr, c3_nice, c3_sys,  c4_usr, c4_nice, c4_sys}'
+25.50 0.00 0.25 0.00 0.00 0.00 2.00 0.00 0.00 0.00 0.00 0.00 100.00 0.00 0.00
+
