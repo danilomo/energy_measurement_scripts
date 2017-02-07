@@ -26,7 +26,7 @@ do
 		
 	stats=$(sudo iotop -b -n 2 -k -o -d 1 | awk '/Total/ { read = $5; write = $12; } END { print read, write }')
 	
-	echo $timestamp $stats #>> "./logFiles/log_io.txt"
+	echo $timestamp $stats >> "./logFiles/log_io.txt"
 
 	dt=$(date -d "$dt +$3 seconds")
 

@@ -27,7 +27,7 @@ do
 	
 	filter="/$domainname/"
 	filter+=' { read = $4; write = $6; } BEGIN { read = 0.0; write = 0.0; } END { print read, write }'
-	echo "awk $filter"
+	#echo "awk $filter"
 	
 	stats=$(sudo iotop -b -n 2 -k -o -d 1 | awk "$filter")
 	

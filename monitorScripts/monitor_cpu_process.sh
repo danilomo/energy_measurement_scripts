@@ -32,9 +32,9 @@ while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
 		
-	stats=$(pidstat -p $pid 1 1 | awk 'NR == 5 { print $4, $5, $7}')
+	stats=$(pidstat -p $pid 1 1 | awk 'NR == 4 { print $5, $6, $7, $8, $9}')
 	
-	echo $timestamp $stats >> "./logFiles/log_process_$logFile.txt"
+	echo $timestamp $stats >> "./logFiles/log_cpu_$logFile.txt"
 
 	dt=$(date -d "$dt +$3 seconds")
 
