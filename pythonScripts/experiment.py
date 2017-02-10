@@ -47,15 +47,17 @@ class Experiment:
 			
 			
 	def startExperiment(self):
-		instances = self._config["instances"]
+		comms = self._config["commands"]
 		
-		for inst in instances:
-			node = self._provider.lookup_instance(inst)
+		for key, command in comms.iteritems():
+			node = self._provider.lookup_instance(key)
 			
 			node.openSSHSession()
 			
-			command = self._config["command"]
+			#command = self._config["command"]
 			command = "nohup " + command + " > /dev/null 2>&1 &"
+			
+			print command + " Yup!" + key
 			
 			print node.sendSSHCommand( command )
 			

@@ -8,8 +8,6 @@ function sleep_until {
 
 	seconds=$(echo "$t2 $t1" | awk '{x = $2 - $1; printf "%.4f\n", x;}')
 
-	#echo "Sleepou $seconds seconds."
-
 	sleep $seconds
 }
 

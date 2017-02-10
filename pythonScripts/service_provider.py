@@ -61,14 +61,28 @@ class LibvirtProvider(ServiceProvider):
 	def lookup_instance(self, name):
 		domain_name = self._get_domain_name(name)
 		uname = self._get_instance_attribute(name, "user_name")
-		pwd = self._get_instance_attribute(name, "password")
+		pwd = self._get_instance_attribute(name, "password")				
 		
-		node = self._conn.lookupByName(domain_name)		
+		node = self._conn.lookupByName(domain_name)	
 		
-		n = LibvirtNode(name, node)
+		self._mapVCPU( domain_name, node)	
+		
+		n = LibvirtNode(name, node )
 		n._uname = uname
 		n._pwd = pwd
 		return n
+		
+	def _mapVCPU( self, name, node ):
+		dic = self._dic["instances"][name]
+		
+		if 'cpu_pin' in dic:
+		
+			for key, value in dic['cpu_pin'].iteritems():
+				cpu = int(key)
+				l = [ x == 1 for x in value ]
+				t = tuple(l)
+				node.pinVcpu( cpu, t )
+			
 		
 	def domainName(self, name):
 		return self._get_domain_name(name)
@@ -235,6 +249,9 @@ class LibvirtNode(Node):
 		self._name = name	
 		self._node = node
 		self._id = name	
+		
+	def setCPUMapping( self, dic ):
+		pass
 		
 	def getName(self):
 		return self._name
