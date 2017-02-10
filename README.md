@@ -9,7 +9,7 @@ specify the instances to being used, and the connection parameters.
 
 The monitor scripts are synchronized with a few miliseconds of difference between the samples. It uses some sysstat commands (mpstat, sysstat), iotop,
 and /proc/net/dev to measure CPU (host and VMs), IO, memory, and network. The energy measurement is performed by sending HTTP requests
-to the "Expert Power Control" device, plugged between the host and the energy supply, and connected to the local network.
+to the "Expert Power Control" device [1], plugged between the host and the energy supply, and connected to the local network.
 
 
 
@@ -28,4 +28,4 @@ to the "Expert Power Control" device, plugged between the host and the energy su
 
 #### References
 
-* http://www.distrelec.ch/de/power-control-1103-steuerbare-steckdose-fuer-tcp-ip-gude-1103/p/11060923
+1. http://www.distrelec.ch/de/power-control-1103-steuerbare-steckdose-fuer-tcp-ip-gude-1103/p/11060923
