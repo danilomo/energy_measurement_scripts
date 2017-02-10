@@ -1,4 +1,4 @@
-###### Introduction
+#### Introduction
 
 A set of bash/python scripts for experimenting with virtual machines and measuring energy.
 
@@ -13,7 +13,7 @@ to the "Expert Power Control" device, plugged between the host and the energy su
 
 
 
-###### HOW TO USE:
+#### HOW TO USE:
 
 1. Clone this repository
 2. Modify the config files
@@ -26,6 +26,6 @@ to the "Expert Power Control" device, plugged between the host and the energy su
 
 
 
-###### References
+#### References
 
 * http://www.distrelec.ch/de/power-control-1103-steuerbare-steckdose-fuer-tcp-ip-gude-1103/p/11060923
