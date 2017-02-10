@@ -13,10 +13,10 @@ to the "Expert Power Control" device, plugged between the host and the energy su
 
 HOW TO USE:
 
-1 - Clone this repository
-2 - Modify the config files
-3 - Invoke "./startExperiment.sh"
-4 - Wait the experiment to finish and collect the log files
+1. Clone this repository
+2. Modify the config files
+3. Invoke "./startExperiment.sh"
+4. Wait the experiment to finish and collect the log files
 
 
 
