@@ -11,7 +11,7 @@ The monitor scripts are synchronized with a few miliseconds of difference betwee
 and /proc/net/dev to measure CPU (host and VMs), IO, memory, and network. The energy measurement is performed by sending HTTP requests
 to the "Expert Power Control" device [1], plugged between the host and the energy supply, and connected to the local network.
 
-
+Also, it's necessary to enable passwordless access to sudo in the host machine, you can learn how to do this in [2].
 
 #### HOW TO USE:
 
@@ -29,3 +29,4 @@ to the "Expert Power Control" device [1], plugged between the host and the energ
 #### References
 
 1. http://www.distrelec.ch/de/power-control-1103-steuerbare-steckdose-fuer-tcp-ip-gude-1103/p/11060923
+2. http://askubuntu.com/questions/168461/how-do-i-sudo-without-having-to-enter-my-password
