@@ -1,6 +1,5 @@
 {
 	"provider": "libvirt1",
-	"command": ":",
 	"experimentDuration": 60,
 	"samplingInterval": 5,
 	"instances": ["ubuntu01", "ubuntu02"],

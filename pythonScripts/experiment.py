@@ -35,15 +35,15 @@ class Experiment:
 			
 		self.generateConfig()		
 		
-		for inst in instances:
-			node = self._provider.lookup_instance(inst)
+		#for inst in instances:
+		#	node = self._provider.lookup_instance(inst)
 			
-			node.openSSHSession()
+		#	node.openSSHSession()
 			
 			#node.sendFile(self._expConfig, "./.incron_files/config.json")
 			#node.sendFile(self._expConfig, "./config.json")
 			
-			node.closeSSHSession()
+		#	node.closeSSHSession()
 			
 			
 	def startExperiment(self):
@@ -54,12 +54,9 @@ class Experiment:
 			
 			node.openSSHSession()
 			
-			#command = self._config["command"]
-			command = "nohup " + command + " > /dev/null 2>&1 &"
+			command = "nohup " + command + " > /dev/null 2>&1 &"			
 			
-			print command + " Yup!" + key
-			
-			print node.sendSSHCommand( command )
+			node.sendSSHCommand( command )
 			
 			node.closeSSHSession()			
 
@@ -69,7 +66,6 @@ class Experiment:
 	
 		dic = {
 			"baseTime": baseTime,
-			"command": self._config["command"],
 			"samplingInterval": self._config["samplingInterval"],
 			"experimentDuration": self._config["experimentDuration"]
 		}
