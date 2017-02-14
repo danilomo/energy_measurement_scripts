@@ -68,10 +68,10 @@ wait $p
 
 echo "Experiment finished!"
 
-echo "Stopping virtual machines"
-while read p; do
-	virsh  shutdown $p --mode acpi
-done < instances.txt
+#echo "Stopping virtual machines"
+#while read p; do
+#	virsh  shutdown $p --mode acpi
+#done < instances.txt
 
 # Cleaning up files
 rm instances.txt
