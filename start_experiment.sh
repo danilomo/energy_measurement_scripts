@@ -22,9 +22,6 @@ function sleep_until {
 
 netinterface=eno1
 
-# Remove log files
-./clean.sh 2&> /dev/null
-
 # Create directory for log files, if it doesn't exist
 mkdir -p ./logFiles
 
@@ -38,10 +35,6 @@ experimentDuration=$(jq '.experimentDuration' experiment_config.json)
 samplingInterval=$(jq '.samplingInterval' experiment_config.json)
 provider=$(jq '.provider' ./configFiles/config.json | sed -e 's/^"//' -e 's/"$//')
 
-
-#python ./pythonScripts/start_experiment.py "./configFiles/provider_config.json" "./configFiles/config.json"
-
-#exit 0
 
 # Start monitor processes for CPU, network, and IO of VMs
 echo "Starting VM monitors..."
@@ -74,6 +67,11 @@ python ./pythonScripts/start_experiment.py "./configFiles/provider_config.json" 
 wait $p
 
 echo "Experiment finished!"
+
+echo "Stopping virtual machines"
+while read p; do
+	virsh  shutdown $p --mode acpi
+done < instances.txt
 
 # Cleaning up files
 rm instances.txt

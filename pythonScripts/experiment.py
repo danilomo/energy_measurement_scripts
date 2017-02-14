@@ -32,6 +32,7 @@ class Experiment:
 			node = self._provider.lookup_instance(inst)
 
 			node.waitServiceActive(22)
+			node.mapVCPU()
 			
 		self.generateConfig()		
 		

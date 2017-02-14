@@ -65,11 +65,17 @@ class LibvirtProvider(ServiceProvider):
 		
 		node = self._conn.lookupByName(domain_name)	
 		
-		self._mapVCPU( domain_name, node)	
+		#self._mapVCPU( domain_name, node)	
 		
-		n = LibvirtNode(name, node )
+		n = LibvirtNode( name, node )		
 		n._uname = uname
 		n._pwd = pwd
+		
+		dic = self._dic["instances"][name]
+		
+		if 'cpu_pin' in dic:
+			n._cpu_pin = dic['cpu_pin']
+			
 		return n
 		
 	def _mapVCPU( self, name, node ):
@@ -298,3 +304,13 @@ class LibvirtNode(Node):
 		
 	def isUp(self):
 		return self._node.isActive()
+		
+		
+	def mapVCPU( self ):
+		dic = self._cpu_pin
+				
+		for key, value in dic.iteritems():
+			cpu = int(key)
+			l = [ x == 1 for x in value ]
+			t = tuple(l)
+			self._node.pinVcpu( cpu, t )
