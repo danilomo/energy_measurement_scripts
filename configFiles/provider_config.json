@@ -5,39 +5,14 @@
 			"url": "qemu:///system"
 		},
 		"instances" : {
-			"ubuntu01" : {
-				"domain_name": "ubuntu01",
+			"ubuntu16.04" : {
+				"domain_name": "ubuntu16.04",
 				"user_name": "teste",
 				"password": "12345",
 				"cpu_pin": {
-					"0": [1, 0, 0, 0]
-				}
-			},
-			"ubuntu02" : {
-				"domain_name": "ubuntu02",
-				"user_name": "teste",
-				"password": "12345",
-				"cpu_pin": {
-					"0": [1, 0, 0, 0]
+					"0": [1,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,0,  0,0,0,0,  0,0,0,0]
 				}
 			}
 		}
-	},
-	
-	"openstack1" : {
-		"type": "openstack",
-		"parameters" : {
-			"user" : "",
-			"password" : "",
-			"url" : "http://x86.trystack.org:5000/v2.0/tokens/",
-			"region" : "RegionOne",
-			"tenant_name" : ""
-		},
-		"instances" : {
-			"inst1" : {
-				"image": "Ubuntu16.04",
-				"size": "m1.small"
-			}
-		}		
 	}
 }
