@@ -15,6 +15,7 @@ Also, it's necessary to enable passwordless access to sudo in the host machine, 
 
 #### HOW TO USE:
 
+0. Install dependencies: sudo apt-get install jq python-libcloud python-paramiko iotop sysstat
 1. Clone this repository
 2. Modify the config files
 3. Invoke "./startExperiment.sh"
