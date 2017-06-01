@@ -1,10 +1,14 @@
 {
-	"provider": "libvirt1",
-	"experimentDuration": 60,
-	"samplingInterval": 5,
-	"instances": ["ubuntu01", "ubuntu02"],
-	"commands": {
-		"ubuntu01": "touch a",
-		"ubuntu02": "touch b"
-	}
+    "commands": {
+        "ubuntu01": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60", 
+        "ubuntu02": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60"
+    }, 
+    "experimentDuration": 60, 
+    "instances": [
+        "ubuntu01", 
+        "ubuntu02"
+    ], 
+    "provider": "libvirt1", 
+    "samplingInterval": 5,
+  	"cpulimit": 15
 }
