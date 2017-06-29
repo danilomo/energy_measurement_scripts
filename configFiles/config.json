@@ -1,12 +1,13 @@
 {
     "commands": {
-        "ubuntu16.04": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60"
+        "ubuntu01": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 120"
     }, 
-    "experimentDuration": 60, 
+    "experimentDuration": 120, 
     "instances": [
-        "ubuntu16.04"
+        "ubuntu01"
     ], 
     "provider": "libvirt1", 
-    "samplingInterval": 5,
-    "cpulimit": 30
+    "samplingInterval": 10,
+    "cpulimit": 30,
+    "measuringInterval": 5
 }

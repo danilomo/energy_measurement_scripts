@@ -14,6 +14,7 @@ function sleep_until {
 
 enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
+measuringInterval=$4
 
 dt=$(date -d "$1")
 
@@ -27,7 +28,7 @@ do
 	
 	#echo $timestamp $stats >> "./logFiles/log_cpu.txt"
 	
-	mpstat -P ALL 1 1 | awk -v filename="./logFiles/log_cpu" -v time=$timestamp -f ./monitorScripts/process_cpu_log.awk
+	mpstat -P ALL $measuringInterval 1 | awk -v filename="./logFiles/log_cpu" -v time=$timestamp -f ./monitorScripts/process_cpu_log.awk
 
 	dt=$(date -d "$dt +$3 seconds")
 

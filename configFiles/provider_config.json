@@ -5,12 +5,12 @@
 			"url": "qemu:///system"
 		},
 		"instances" : {
-			"ubuntu16.04" : {
-				"domain_name": "ubuntu16.04",
+			"ubuntu01" : {
+				"domain_name": "ubuntu01",
 				"user_name": "teste",
 				"password": "12345",
 				"cpu_pin": {
-					"0": [1,0,0,0, 0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0,  0,0,0,0]
+					"0": [1,0,0,0]
 				}
 			}
 		}

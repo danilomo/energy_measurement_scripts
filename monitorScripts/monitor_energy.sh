@@ -16,6 +16,7 @@ enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
 
 dt=$(date -d "$1")
+measuringInterval=$4
 
 sleep_until $dt
 
@@ -23,8 +24,10 @@ while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
 	
-	sleep 1	
-	stats=$(curl -s "http://10.93.182.126/statusjsn.js?_=1484231581352&components=18257" | python ./monitorScripts/parseJSON.py)
+	#sleep 1	
+	#stats=$(curl -s "http://10.93.182.126/statusjsn.js?_=1484231581352&components=18257" | python ./monitorScripts/parseJSON.py)
+	
+	stats=$(./monitorScripts/energy_reader.py $measuringInterval 5)
 	
 	echo $timestamp $stats >> "./logFiles/log_energy.txt"
 	

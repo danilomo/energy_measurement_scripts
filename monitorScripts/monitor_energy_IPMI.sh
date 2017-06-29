@@ -14,6 +14,7 @@ function sleep_until {
 
 enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
+measuringInterval=$4
 
 dt=$(date -d "$1")
 
@@ -23,7 +24,7 @@ while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
 	
-	stats=$(./monitorScripts/readIMPISensor.sh 1 20)
+	stats=$(./monitorScripts/readIMPISensor.sh $measuringInterval 20)
 	
 	echo $timestamp $stats >> "./logFiles/log_IPMI_all_power.txt"
 	

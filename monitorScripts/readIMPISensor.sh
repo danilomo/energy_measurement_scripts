@@ -3,7 +3,6 @@
 t0=$(date +%s%3N)
 total=$1
 samples=$2
-tf=$[$t0 + $total * 1000]
 interval=$(echo "scale=5; $total / $samples - 0.027" | bc)
 
 for i in `seq 1 $samples`; do

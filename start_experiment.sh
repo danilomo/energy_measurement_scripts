@@ -35,7 +35,7 @@ experimentDuration=$(jq '.experimentDuration' experiment_config.json)
 samplingInterval=$(jq '.samplingInterval' experiment_config.json)
 provider=$(jq '.provider' ./configFiles/config.json | sed -e 's/^"//' -e 's/"$//')
 limit=$(jq '.cpulimit' ./configFiles/config.json | sed -e 's/^"//' -e 's/"$//'	)
-
+measuringInterval=$(jq '.measuringInterval // 1' ./configFiles/config.json)
 
 # Start monitor processes for CPU, network, and IO of VMs
 echo "Starting VM monitors..."
@@ -44,20 +44,20 @@ while read p; do
 	vcpupid=$(getVCPUID $p)
 	
 	int=$(python ./pythonScripts/find_interface_name.py "./configFiles/provider_config.json" $provider $p)
-	./monitorScripts/monitor_cpu_process.sh "$baseTime" $experimentDuration $samplingInterval $vcpupid $p &
+	./monitorScripts/monitor_cpu_process.sh "$baseTime" $experimentDuration $samplingInterval $vcpupid $p $measuringInterval &
 	./monitorScripts/monitor_memory_process.sh "$baseTime" $experimentDuration $samplingInterval $pid $p &	
-	./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $int &
-	./monitorScripts/monitor_io_vm.sh "$baseTime" $experimentDuration $samplingInterval $p &		
+	./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $int $measuringInterval &
+	./monitorScripts/monitor_io_vm.sh "$baseTime" $experimentDuration $samplingInterval $p $measuringInterval &		
 done < instances.txt
 
 # Start monitor process for power, CPU, network and IO of host
 echo "Starting host monitors..."
-./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval &
-#./monitorScripts/monitor_energy.sh "$baseTime" $experimentDuration $samplingInterval &
-./monitorScripts/monitor_cpu.sh "$baseTime" $experimentDuration $samplingInterval &
+#./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
+./monitorScripts/monitor_energy.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
+./monitorScripts/monitor_cpu.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_memory.sh "$baseTime" $experimentDuration $samplingInterval &
-./monitorScripts/monitor_io.sh "$baseTime" $experimentDuration $samplingInterval &
-./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netinterface &
+./monitorScripts/monitor_io.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
+./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netinterface $measuringInterval &
 
 p=$!
 

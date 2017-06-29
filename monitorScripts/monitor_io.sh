@@ -15,6 +15,7 @@ function sleep_until {
 
 enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
+measuringInterval=$4
 
 dt=$(date -d "$1")
 
@@ -24,7 +25,7 @@ while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
 		
-	stats=$(sudo iotop -b -n 2 -k -o -d 1 | awk '/Total/ { read = $5; write = $12; } END { print read, write }')
+	stats=$(sudo iotop -b -n 2 -k -o -d $measuringInterval | awk '/Total/ { read = $5; write = $12; } END { print read, write }')
 	
 	echo $timestamp $stats >> "./logFiles/log_io.txt"
 
