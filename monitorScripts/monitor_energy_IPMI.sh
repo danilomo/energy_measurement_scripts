@@ -16,6 +16,8 @@ enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
 measuringInterval=$4
 
+samples=$(expr $measuringInterval '*' 10)
+
 dt=$(date -d "$1")
 
 sleep_until $dt
@@ -24,7 +26,7 @@ while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
 	
-	stats=$(./monitorScripts/readIMPISensor.sh $measuringInterval 20)
+	stats=$(./monitorScripts/readIMPISensor.sh $measuringInterval $samples)
 	
 	echo $timestamp $stats >> "./logFiles/log_IPMI_all_power.txt"
 	
@@ -34,3 +36,4 @@ do
 
 	dtinseconds=$(date +%s)
 done
+

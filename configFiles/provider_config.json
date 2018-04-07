@@ -14,5 +14,21 @@
 				}
 			}
 		}
+	},
+	
+	"docker1": {
+		"type": "docker",
+		"instances" : {
+			"ubuntu01" : {
+				"image_name": "ubuntu01", 
+                "cpu_pin": [1,0,0,0], 
+                "cpu_limit": 50
+			},
+            "ubuntu02": {
+                "image_name": "ubuntu01",
+                "cpu_pin": [1,0,0,0]
+            }
+		}
 	}
+
 }

@@ -6,9 +6,8 @@ import sys
 from experiment import Experiment
 
 providerConfig = sys.argv[1]
-experimentConfig = sys.argv[2]
+config = sys.argv[2]
 
-fac = ServiceFactory(providerConfig)
-exp = Experiment(experimentConfig, fac)
+exp = Experiment(providerConfig, config)
 
 exp.startExperiment()
