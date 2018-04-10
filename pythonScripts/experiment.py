@@ -4,118 +4,132 @@ import subprocess
 import json
 import time
 import sys
+import sh
+
+global processes
+processes = []
+
 
 class Experiment:
 
-	def __init__(self, providerConfig, config):
+    def __init__(self, providerConfig, config):
 
-		def loadDict(path):
-			f = open(path)
-			dic = json.load(f)
-			f.close
+        def loadDict(path):
+            f = open(path)
+            dic = json.load(f)
+            f.close
 
-			return dic
+            return dic
 
-		self._config = loadDict(config)
-		self._providerConfig = loadDict(providerConfig)
+        self._config = loadDict(config)
+        self._providerConfig = loadDict(providerConfig)
+        self._expConfig = "experiment_config.json"
 
-		provider = self._config["provider"]
+        self.loadProviders()
 
-		if(self._providerConfig[provider]["type"] == "libvirt"):
-			factory = ServiceFactory(providerConfig)
-			self._provider = factory.create_provider(self._config["provider"])
-			self._provider.connect()
+    def prepareInstances(self):
 
-		self._expConfig = "experiment_config.json"
+        instances = self._config["instances"]
 
-	def prepareInstances(self):
-		provider = self._config["provider"]
+        for name, inst in instances.items():
+            self.prepareInstance( name, inst )
 
-		if(self._providerConfig[provider]["type"] == "libvirt"):
-			self._prepareLibvirtInstances()
-		elif(self._providerConfig[provider]["type"] == "docker"):
-			self._prepareDockerContainers()
+        self.generateConfig()
 
-		self.generateConfig()
+    def loadProviders(self):
 
-	def _prepareLibvirtInstances(self):
-		instances = self._config["instances"]
+        providers = {}
+        self._providers = providers
+        
+        for name, inst in self._config["instances"].items():
+            if( self.getProvider(name) == "libvirt" ):
+                factory = ServiceFactory( self._providerConfig )
+                providers[name] = factory.create_provider(self._config["instances"][name]["provider"])
+                providers[name].connect()
 
-		for inst in instances:
-			with open("instances.txt", "a") as myfile:
-				myfile.write(str(self._provider.domainName(inst)) + "\n")
+    def prepareInstance( self, name, inst ):
+        if( self.getProvider( name ) == "libvirt" ):
+            self.prepareLibvirtInstance( name, inst )
 
-		for inst in instances:
-			node = self._provider.lookup_instance(inst)
+    def prepareLibvirtInstance( self, name, inst ):
+        #with open("instances.txt", "a") as myfile:
+        #    myfile.write( name + "\n" )            
+        node = self._providers[name].lookup_instance( name )
 
-			if( not node.isUp() ):
-				node.turnOn()
+        if( not node.isUp() ):
+            node.turnOn()
 
-		for inst in instances:
-			node = self._provider.lookup_instance(inst)
-			node.waitServiceActive(22)
-			node.mapVCPU()
+        node.waitServiceActive(22)
+        node.mapVCPU()
 
-	def _prepareDockerContainers(self):
-		pass
+    def startExperiment(self):
+        comms = self._config["commands"]
 
+        for key, comm in comms.items():
+            self.executeCommand( key, comm )        
 
-	def startExperiment(self):
-		provider = self._config["provider"]
+    def executeCommand( self, key, comm ):
 
-		if(self._providerConfig[provider]["type"] == "libvirt"):
-			self._startLibvirtExperiments()
-		elif(self._providerConfig[provider]["type"] == "docker"):
-			self._startDockerExperiments()
+        provider = self.getProvider(key)
 
+        if( provider == "libvirt" ):
+            self.executeLibvirtCommand( key, comm )
+        elif( provider == "docker" ):
+            self.executeDockerCommand( key, comm )
+        elif( provider == "host" ):
+            self.executeHostCommand( key, comm )
 
-	def _startLibvirtExperiments(self):
-		comms = self._config["commands"]
+    def executeHostCommand( self, key, comm ):
+        l = comm.split()
+        name = l[0]
+        args = l[1:]
 
-		for key, command in comms.iteritems():
-			node = self._provider.lookup_instance(key)
-			print("Sending command.")
-			node.openSSHSession()
+        if("cpupin" in self._config["instances"][key]):
+            cpupin = self._config["instances"][key]["cpupin"]
+            command = sh.Command( "taskset" ).bake( "-c", cpupin, name, * args )
+        else:
+            command = sh.Command( name ).bake( * args )            
 
-			command = "nohup " + command + " > /dev/null 2>&1 &"
+        p = command( _bg = True )
+        pid = p.process.pid
 
-			node.sendSSHCommand( command )
+        processes.append( p )
 
-			print("Command sent.")
+        if("cpulimit" in self._config["instances"][key]):
+            limit = self._config["instances"][key]["cpulimit"]            
+            cpulimitcomm = sh.Command( "./cpulimit" ).bake( "-i", "-l", str(limit), "-p", str(pid) )            
+            p2 = cpulimitcomm( _bg = True )
 
-			node.closeSSHSession()
-
-	def _startDockerExperiments(self):
-	    comms = self._config["commands"]
-            provider = self._config["provider"]
-
-            for key, command in comms.iteritems():
-                lCpu = self._providerConfig[provider]["instances"][key]["cpu_pin"]
-                cpuAffinity = str([i[0] for i in enumerate(lCpu) if i[1] == 1 ]).replace("[", "").replace("]", "").replace(" ", "")
-                imageName = self._providerConfig[provider]["instances"][key]["image_name"]
-
-                dockerCommand = "docker run -d=true --name=%s --rm --cpuset-cpus=%s %s " % (key, cpuAffinity, imageName)
-                dockerCommand = dockerCommand + command
-
-                print(dockerCommand)
-
-                p = Popen( dockerCommand.split() )
-
-                if( "cpu_limit" in self._providerConfig[provider]["instances"][key] ):
-                    cpuLimit = self._providerConfig[provider]["instances"][key]["cpu_limit"]
-                    cpuLimitCommand = "./cpuLimitContainer.sh %s %s" % (key, cpuLimit)
-                    pLimit = Popen( cpuLimitCommand.split() )
+            processes.append( p2 )
 
 
+    def executeDockerCommand( self, key, comm ):
+        pass
 
-	def generateConfig(self):
-		baseTime = subprocess.check_output(["date", "-d", "+10 seconds"]).strip()
+    def executeLibvirtCommand( self, key, comm ):
+        provider = self._providers[key]
 
-		dic = {
-			"baseTime": baseTime,
-			"samplingInterval": self._config["samplingInterval"],
-			"experimentDuration": self._config["experimentDuration"]
-		}
+        node = provider.lookup_instance(key)
+        node.openSSHSession()
+        command = "nohup " + comm + " > /dev/null 2>&1 &"
+        node.sendSSHCommand( command )
+        node.closeSSHSession()
+            
+    def getProvider( self, instname ):
+        prov = self._config["instances"][instname]["provider"]
+        if( prov == "host" ):
+            return prov
+        else:
+            return self._providerConfig[prov]["type"]
 
-		with open(self._expConfig, "w") as text_file:
-			text_file.write(json.dumps(dic))
+    def generateConfig(self):
+        baseTime = subprocess.check_output(["date", "-d", "+10 seconds"]).strip().decode("utf-8")
+
+        dic = {
+            "baseTime": baseTime,
+            "samplingInterval": self._config["samplingInterval"],
+            "experimentDuration": self._config["experimentDuration"]
+        }
+
+        with open(self._expConfig, "w") as text_file:
+            text_file.write(json.dumps(dic))

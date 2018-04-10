@@ -4,6 +4,7 @@ import json
 import time
 import sys
 from experiment import Experiment
+import experiment
 
 providerConfig = sys.argv[1]
 config = sys.argv[2]
@@ -11,3 +12,7 @@ config = sys.argv[2]
 exp = Experiment(providerConfig, config)
 
 exp.startExperiment()
+
+for p in experiment.processes:
+    p.wait()
+

@@ -1,14 +1,20 @@
 {
     "commands": {
-        "ubuntu01": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 120",
-        "ubuntu02": "./iobenchmark.sh 120 10000"
+        "host1": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60",
+        "ubuntu01": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60"
+    },    
+    "experimentDuration": 60, 
+    "instances": {
+	"host1": {
+	    "provider" : "host",
+	    "cpulimit" : 50,
+            "cpupin": "0"
+	},
+        "ubuntu01": {
+            "provider": "libvirt1",
+            "cpulimt": 20
+        }
     }, 
-    "experimentDuration": 120, 
-    "instances": [
-        "ubuntu01", "ubuntu02"
-    ], 
-    "provider": "docker1", 
     "samplingInterval": 10,
-    "cpulimit": 30,
     "measuringInterval": 5
 }
