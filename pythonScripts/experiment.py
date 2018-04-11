@@ -66,7 +66,24 @@ class Experiment:
         comms = self._config["commands"]
 
         for key, comm in comms.items():
-            self.executeCommand( key, comm )        
+            self.executeCommand( key, comm )
+
+        for key, inst in self._config["instances"].items():
+            
+            if( self.getProvider(key) == "libvirt" and
+                "cpulimit" in self._config["instances"][key]):
+                
+                limit = self._config["instances"][key]["cpulimit"]
+                self.setCPULimitVM( key, limit )
+
+    def setCPULimitVM( self, key, limit ):
+        limit = self._config["instances"][key]["cpulimit"]
+        time = self._config["experimentDuration"]
+        
+        cpulimcomm = sh.Command("./cpuLimitVM.sh").bake( str(time), key, limit )
+
+        p = cpulimcomm( _bg = True )
+        processes.append( p )
 
     def executeCommand( self, key, comm ):
 

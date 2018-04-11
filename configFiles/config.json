@@ -1,18 +1,16 @@
 {
     "commands": {
-        "host1": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60",
-        "ubuntu01": "stress-ng --cpu 1 --cpu-method matrixprod  --metrics-brief --perf -t 60"
+        "host1": "./net_benchmark.sh 60"
     },    
     "experimentDuration": 60, 
     "instances": {
 	"host1": {
-	    "provider" : "host",
-	    "cpulimit" : 50,
+	    "provider" : "host",	    
             "cpupin": "0"
 	},
         "ubuntu01": {
             "provider": "libvirt1",
-            "cpulimt": 20
+            "cpulimit": 30
         }
     }, 
     "samplingInterval": 10,
