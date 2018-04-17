@@ -1,5 +1,29 @@
 #!/bin/bash
 
+read -d '' awkScript << 'EOF'
+BEGIN{
+    totalup = 0;
+    totaldown = 0;
+    total = 0;
+    count = 0;
+}
+
+/total/ {
+    totalup += $3;
+    totaldown += $4;
+    total += $5;
+    count = count + 1;
+}
+
+END{
+    avgup = totalup / count;
+    avgdown = totaldown / count;
+    avgtotal = total / count;
+    printf("%.2f %.2f %.2f", avgup, avgdown, avgtotal);
+}
+EOF
+
+
 
 
 function sleep_until {
@@ -7,8 +31,6 @@ function sleep_until {
 	t2=$(date +%s.%N)
 
 	seconds=$(echo "$t2 $t1" | awk '{x = $2 - $1; printf "%.4f\n", x;}')
-
-	#echo "Sleepou $seconds seconds."
 
 	sleep $seconds
 }
@@ -27,31 +49,14 @@ sleep_until $dt
 while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
-		
-	eth01=`cat /proc/net/dev | grep $netinterface`
-	sleep $measuringInterval
-	eth02=`cat /proc/net/dev | grep $netinterface`
 
-	eth0download1=`echo $eth01 | awk '{print $2}'`
-	eth0download2=`echo $eth02 | awk '{print $2}'`
-	eth0download=`expr '(' $eth0download2 - $eth0download1 ')'`
+        samples=$(echo "2 * $measuringInterval" | bc | xargs printf "%.0f" )
 
-	eth0upload1=`echo $eth01 | awk '{print $10}'`
-	eth0upload2=`echo $eth02 | awk '{print $10}'`
-	eth0upload=`expr '(' $eth0upload2 - $eth0upload1 ')'`
+        line=$(bwm-ng -c $samples -u bytes -o csv -I $netinterface -C " " | awk "$awkScript")
 
-	eth0downpacket1=`echo $eth01 | awk '{print $3}'`
-	eth0downpacket2=`echo $eth02 | awk '{print $3}'`
-	eth0downpacket=`expr '(' $eth0downpacket2 - $eth0downpacket1 ')'`
-
-	eth0uppacket1=`echo $eth01 | awk '{print $11}'`
-	eth0uppacket2=`echo $eth02 | awk '{print $11}'`
-	eth0uppacket=`expr '(' $eth0uppacket2 - $eth0uppacket1 ')'`
-	
-	echo $timestamp $eth0download $eth0upload $eth0downpacket $eth0uppacket >> "./logFiles/log_net_$netinterface.txt"
-
+        echo $timestamp $line >> "./logFiles/log_net_$netinterface.txt"
+        
 	dt=$(date -d "$dt +$3 seconds")
-
 	sleep_until $dt
 
 	dtinseconds=$(date +%s)

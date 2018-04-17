@@ -10,3 +10,5 @@ function loop {
 export -f loop
 
 timeout $1 bash -c loop
+
+exit 0
