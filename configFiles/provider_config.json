@@ -10,25 +10,17 @@
 		"user_name": "teste",
 		"password": "12345",
 		"cpu_pin": {
-		    "0": [0,1,0,0]
+		    "0": [1,0,0,0]
+		}
+            },
+            "ubuntu02" : {
+		"domain_name": "ubuntu02",
+		"user_name": "teste",
+		"password": "12345",
+		"cpu_pin": {
+		    "0": [1,0,0,0]
 		}
 	    }
 	}
-    },
-    
-    "docker1": {
-	"type": "docker",
-	"instances" : {
-	    "ubuntu01" : {
-		"image_name": "ubuntu01", 
-                "cpu_pin": [1,0,0,0], 
-                "cpu_limit": 50
-	    },
-            "ubuntu02": {
-                "image_name": "ubuntu01",
-                "cpu_pin": [1,0,0,0]
-            }
-	}
     }
-
 }

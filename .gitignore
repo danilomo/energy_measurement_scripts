@@ -1,2 +1,5 @@
 *.pyc
 logFiles/
+.database
+trash_bin/
+benchmark*

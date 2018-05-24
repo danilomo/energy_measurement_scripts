@@ -1,18 +1,13 @@
 {
     "commands": {
-        "host1": "./net_benchmark.sh 60"
+        "ubuntu01": "./start_benchmark.sh 300 0 0 0 foobar.zdv.uni-mainz.de"
     },    
-    "experimentDuration": 60, 
+    "experimentDuration": 300, 
     "instances": {
-	"host1": {
-	    "provider" : "host",	    
-            "cpupin": "0"
-	},
         "ubuntu01": {
-            "provider": "libvirt1",
-            "cpulimit": 30
+            "provider": "libvirt1"
         }
     }, 
-    "samplingInterval": 10,
-    "measuringInterval": 5
+    "samplingInterval": 15,
+    "measuringInterval": 10
 }
