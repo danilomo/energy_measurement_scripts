@@ -1,11 +1,12 @@
 {
     "commands": {
-        "ubuntu01": "./start_benchmark.sh 300 0 0 0 foobar.zdv.uni-mainz.de"
+        "ubuntu01": "./start_benchmark.sh 100 0 1 0 foobar.zdv.uni-mainz.de"
     },    
-    "experimentDuration": 300, 
+    "experimentDuration": 100, 
     "instances": {
         "ubuntu01": {
-            "provider": "libvirt1"
+            "provider": "libvirt1",
+            "iolimit": 499
         }
     }, 
     "samplingInterval": 15,

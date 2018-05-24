@@ -1,3 +1,4 @@
+import sys
 import sh
 import json
 import clutil
@@ -22,12 +23,10 @@ class QMP:
     def __getattr__(self, name):
         
         dct = {
-            "execute": name.replace("_", "-") if name in QMP._comands_with_hyphen else name
+            "execute": name.replace("_", "-") if name in QMP._comands_with_hyphen else name            
         }
-        
+                
         def inner( arguments = None ):
-            nonlocal self
-            nonlocal dct
             if arguments and isinstance( arguments, dict ):
                 dct["arguments"] = arguments
 
@@ -39,7 +38,7 @@ class QMP:
 
             if "error" in dict_output:
                 raise  ValueError('Error found: ' + dict_output["error"]["desc"] )
-
+            
             return dict_output["return"]
 
         return inner
@@ -57,7 +56,7 @@ def set_io_throttle( qmp, device, **kvargs ):
 
     print(args)
 
-    qmp.block_set_io_throttle( args )
+    print(qmp.block_set_io_throttle( args ))
 
 @Command
 def blockname( args ):

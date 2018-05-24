@@ -29,6 +29,11 @@ def get_node( machine, provider_file, provider ):
     return node, provider
 
 @Command
+def address( args, provider_file = "./configFiles/provider_config.json", provider = "libvirt1" ):
+    node, provider = get_node(args[0], provider_file, provider)
+    print( node.getIPAddress() )
+
+@Command
 def command( args, provider_file = "./configFiles/provider_config.json", provider = "libvirt1" ):
     node, provider = get_node(args[0], provider_file, provider)
     x = node.sendSSHCommand(args[1])

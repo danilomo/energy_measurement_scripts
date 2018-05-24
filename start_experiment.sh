@@ -30,6 +30,7 @@ mkdir -p ./logFiles
 echo "Preparing instances..."
 python ./pythonScripts/prepare_instances.py "./configFiles/provider_config.json" "./configFiles/config.json"
 
+
 baseTime=$(jq '.baseTime' experiment_config.json | sed -e 's/^"//' -e 's/"$//' )
 experimentDuration=$(jq '.experimentDuration' experiment_config.json)
 samplingInterval=$(jq '.samplingInterval' experiment_config.json)
@@ -37,16 +38,15 @@ provider=$(jq '.provider' ./configFiles/config.json | sed -e 's/^"//' -e 's/"$//
 limit=$(jq '.cpulimit' ./configFiles/config.json | sed -e 's/^"//' -e 's/"$//'  )
 measuringInterval=$(jq '.measuringInterval // 1' ./configFiles/config.json)
 
-
 # Start monitor process for power, CPU, network and IO of host
 echo "Starting host monitors..."
-#./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
+./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 #./monitorScripts/monitor_energy.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_cpu.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_memory.sh "$baseTime" $experimentDuration $samplingInterval &
 ./monitorScripts/monitor_io.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netinterface $measuringInterval &
-./monitorScripts/monitor_net2.sh "$baseTime" $experimentDuration $samplingInterval $netinterface $measuringInterval &
+
 
 p=$!
 
@@ -64,5 +64,3 @@ echo "Experiment finished!"
 # Cleaning up files
 rm -rf instances.txt
 rm -rf experiment_config.json
-
-#./check_experiment.sh

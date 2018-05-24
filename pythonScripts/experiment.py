@@ -5,6 +5,7 @@ import json
 import time
 import sys
 import sh
+from qmp import QMP
 
 global processes
 processes = []
@@ -66,15 +67,20 @@ class Experiment:
         comms = self._config["commands"]
 
         for key, comm in comms.items():
-            self.executeCommand( key, comm )
+            pass
+            #self.executeCommand( key, comm )
 
         for key, inst in self._config["instances"].items():
             
-            if( self.getProvider(key) == "libvirt" and
-                "cpulimit" in self._config["instances"][key]):
+            if( self.getProvider(key) == "libvirt" ):
                 
-                limit = self._config["instances"][key]["cpulimit"]
-                self.setCPULimitVM( key, limit )
+                if("cpulimit" in self._config["instances"][key]):                
+                    limit = self._config["instances"][key]["cpulimit"]
+                    self.setCPULimitVM( key, limit )
+
+                if("iolimit" in self._config["instances"][key]):                
+                    limit = self._config["instances"][key]["iolimit"]
+                    self.setIOLimitVM( key, limit )
 
     def setCPULimitVM( self, key, limit ):
         limit = self._config["instances"][key]["cpulimit"]
@@ -84,6 +90,17 @@ class Experiment:
 
         p = cpulimcomm( _bg = True )
         processes.append( p )
+
+    def setIOLimitVM( self, key, limit ):
+        qmp = QMP( key )
+        
+        device = qmp.query_block()[0]["device"]
+        args = { "device": device, "bps": 0, "bps_rd": 0, "bps_wr": 0, "iops": 0, "iops_rd": 0, "iops_wr": 0 }
+        limit = self._config["instances"][key]["iolimit"]
+        args["iops"] = int(limit)
+
+        res = qmp.block_set_io_throttle( args )
+        print( res )
 
     def executeCommand( self, key, comm ):
 
