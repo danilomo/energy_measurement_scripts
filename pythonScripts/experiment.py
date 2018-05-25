@@ -67,8 +67,7 @@ class Experiment:
         comms = self._config["commands"]
 
         for key, comm in comms.items():
-            pass
-            #self.executeCommand( key, comm )
+            self.executeCommand( key, comm )
 
         for key, inst in self._config["instances"].items():
             
