@@ -53,8 +53,6 @@ class Experiment:
             self.prepareLibvirtInstance( name, inst )
 
     def prepareLibvirtInstance( self, name, inst ):
-        #with open("instances.txt", "a") as myfile:
-        #    myfile.write( name + "\n" )            
         node = self._providers[name].lookup_instance( name )
 
         if( not node.isUp() ):
@@ -84,6 +82,10 @@ class Experiment:
                 if("cpushare" in self._config["instances"][key]):
                     share = self._config["instances"][key]["cpushare"]            
                     sh.virsh( "schedinfo", key, "--live", "cpu_shares=" + str( share ) )
+
+                if("netlimit" in self._config["instances"][key]):
+                    limit = self._config["instances"][key]["netlimit"]            
+                    # todo - implement net limit for VM
 
 
     def setCPULimitVM( self, key, limit ):
