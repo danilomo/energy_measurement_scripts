@@ -1,14 +1,10 @@
 #!/bin/bash
 
-netinterface=eno1
-
 function sleep_until {
 	t1=$(date -d "$*" +%s.%N)
 	t2=$(date +%s.%N)
 
 	seconds=$(echo "$t2 $t1" | awk '{x = $2 - $1; printf "%.4f\n", x;}')
-
-	#echo "Sleepou $seconds seconds."
 
 	sleep $seconds
 }
@@ -17,16 +13,10 @@ enddate=$(date -d "$dt +$2 seconds" +%s)
 dtinseconds="0"
 
 dt=$(date -d "$1")
-pid=$4
+pid=$5
 
-if [ -z "$6" ];
-then
-	logFile=$pid
-	measuringInterval=$5
-else
-	logFile=$5
-	measuringInterval=$6	
-fi
+logFile=$6
+measuringInterval=$4
 
 sleep_until $dt
 

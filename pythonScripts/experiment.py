@@ -81,6 +81,11 @@ class Experiment:
                     limit = self._config["instances"][key]["iolimit"]
                     self.setIOLimitVM( key, limit )
 
+                if("cpushare" in self._config["instances"][key]):
+                    share = self._config["instances"][key]["cpushare"]            
+                    sh.virsh( "schedinfo", key, "--live", "cpu_shares=" + str( share ) )
+
+
     def setCPULimitVM( self, key, limit ):
         limit = self._config["instances"][key]["cpulimit"]
         time = self._config["experimentDuration"]
@@ -134,6 +139,8 @@ class Experiment:
             p2 = cpulimitcomm( _bg = True )
 
             processes.append( p2 )
+
+
 
 
     def executeDockerCommand( self, key, comm ):
