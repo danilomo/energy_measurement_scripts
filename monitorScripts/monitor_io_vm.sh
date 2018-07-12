@@ -17,18 +17,18 @@ dtinseconds="0"
 dt=$(date -d "$1")
 domainname=$4
 measuringInterval=$5
+pid=$6
+
 
 sleep_until $dt
 
 while [ $dtinseconds -le $enddate ]
 do
 	timestamp=$(date +%s%3N)
-	
-	filter="/$domainname/"
-	filter+=' { read = $4; write = $6; } BEGIN { read = 0.0; write = 0.0; } END { print read, write }'
-	#echo "awk $filter"
-	
-	stats=$(sudo iotop -b -n 2 -k -o -d $measuringInterval | awk "$filter")
+		
+	#stats=$(sudo iotop --pid $pid -b -n 2 -k -d $measuringInterval | awk '/Actual/ { read = $4; write = $10; } END { print read, write }')
+
+	stats=$(pidstat -d -p $pid $measuringInterval 1 | grep Average | awk '{print $4, $5, $6}')
 	
 	echo $timestamp $stats >> "./logFiles/log_io_$domainname.txt"
 

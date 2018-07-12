@@ -41,8 +41,12 @@ measuringInterval=$(jq '.measuringInterval // 1' ./configFiles/config.json)
 # Start monitor processes for each VCPU
 for i in $(./pythonScripts/libvirtutils.py instances)
 do
+	pid=$(getVMPid $i)	
     vcpupid=$(getVCPUID $i)
+	netint=$(./pythonScripts/libvirtutils.py network_int $i)
     ./monitorScripts/monitor_cpu_process.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval $vcpupid $i &
+	./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netint $measuringInterval &
+	./monitorScripts/monitor_io_vm.sh "$baseTime" $experimentDuration $samplingInterval $i $measuringInterval $pid &
 done
 
 
