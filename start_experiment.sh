@@ -41,22 +41,26 @@ measuringInterval=$(jq '.measuringInterval // 1' ./configFiles/config.json)
 # Start monitor processes for each VCPU
 for i in $(./pythonScripts/libvirtutils.py instances)
 do
-	pid=$(getVMPid $i)	
+    pid=$(getVMPid $i)	
     vcpupid=$(getVCPUID $i)
-	netint=$(./pythonScripts/libvirtutils.py network_int $i)
+    netint=$(./pythonScripts/libvirtutils.py network_int $i)
     ./monitorScripts/monitor_cpu_process.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval $vcpupid $i &
-	./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netint $measuringInterval &
-	./monitorScripts/monitor_io_vm.sh "$baseTime" $experimentDuration $samplingInterval $i $measuringInterval $pid &
+    ./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netint $measuringInterval &
+    ./monitorScripts/monitor_io_vm.sh "$baseTime" $experimentDuration $samplingInterval $i $measuringInterval $pid &
+
+    ./monitorScripts/monitor_cpu_process2.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval $vcpupid $i &    
 done
 
 
 # Start monitor process for power, CPU, network and IO of host
 echo "Starting host monitors..."
-./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
+#./monitorScripts/monitor_energy_IPMI.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_cpu.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_memory.sh "$baseTime" $experimentDuration $samplingInterval &
 ./monitorScripts/monitor_io.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 ./monitorScripts/monitor_net.sh "$baseTime" $experimentDuration $samplingInterval $netinterface $measuringInterval &
+
+./monitorScripts/monitor_cpu2.sh "$baseTime" $experimentDuration $samplingInterval $measuringInterval &
 
 
 p=$!
